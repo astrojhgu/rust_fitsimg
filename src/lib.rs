@@ -63,6 +63,18 @@ impl TypeToImageType for i64{
     }
 }
 
+impl TypeToImageType for f32{
+    fn get_img_type()->ImageType{
+        ImageType::FLOAT_IMG
+    }
+}
+
+impl TypeToImageType for f64{
+    fn get_img_type()->ImageType{
+        ImageType::DOUBLE_IMG
+    }
+}
+
 pub fn read_img<T>(fname:String, n:usize)->Result<ArrayD<T>>
 where T:Float+NumCast+ReadWriteImage
 {
