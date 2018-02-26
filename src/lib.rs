@@ -2,6 +2,7 @@ extern crate fitsio;
 extern crate ndarray;
 extern crate num_traits;
 
+use std::fs::remove_file;
 use fitsio::FitsFile;
 use fitsio::fitsfile::ImageDescription;
 use fitsio::types::ImageType;
@@ -97,14 +98,27 @@ pub fn write_img<T>(fname: String, data: &ArrayD<T>) -> Result<()>
 where
     T: Float + NumCast + ReadWriteImage + TypeToImageType,
 {
-    let mut fits_file = fitsio::FitsFile::create(fname)?;
     let shape = data.shape();
     let img_desc = ImageDescription {
         data_type: <T as TypeToImageType>::get_img_type(),
         dimensions: shape,
     };
 
-    let hdu = fits_file.create_image("".to_string(), &img_desc)?;
+    let mut fits_file = {
+        remove_file(&fname);
+        match fitsio::FitsFile::create(fname)
+            .with_custom_primary(&img_desc)
+            .open()
+        {
+            Ok(x) => x,
+            Err(x) => {
+                println!("{}", x);
+                return Err(x);
+            }
+        }
+    };
+    //let hdu = fits_file.create_image("".to_string(), &img_desc)?;
+    let hdu = fits_file.current_hdu()?;
     let mut data1 = Vec::<T>::new();
     for x in data.into_iter() {
         data1.push(*x);
