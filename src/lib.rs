@@ -1,7 +1,7 @@
 extern crate fitsio;
 extern crate ndarray;
 extern crate num_traits;
-
+use std::iter::FromIterator;
 use std::fs::remove_file;
 use fitsio::FitsFile;
 use fitsio::fitsfile::ImageDescription;
@@ -81,15 +81,22 @@ where
 {
     let mut fits_file = fitsio::FitsFile::open(fname)?;
     let hdu = fits_file.hdu(n)?;
-    let shape = match hdu.info {
-        HduInfo::ImageInfo { ref shape, .. } => shape.clone(),
+    let mut shape = match hdu.info {
+        HduInfo::ImageInfo { ref shape, .. } => {
+            println!("{:?}", shape);
+            shape.clone()
+        }
         _ => return Err(Error::Message("Not image".to_string())),
     };
 
+    shape.reverse();
     let data = hdu.read_image(&mut fits_file)?;
 
     match ArrayD::<T>::from_shape_vec(shape.into_dimension(), data) {
-        Ok(x) => Ok(x),
+        Ok(x) => {
+            println!("{:?}", x.shape());
+            Ok(x)
+        }
         Err(_) => Err(Error::Message("err".to_string())),
     }
 }
@@ -98,10 +105,11 @@ pub fn write_img<T>(fname: String, data: &ArrayD<T>) -> Result<()>
 where
     T: Float + NumCast + ReadWriteImage + TypeToImageType,
 {
-    let shape = data.shape();
+    let mut shape = data.shape().to_vec();
+    shape.reverse();
     let img_desc = ImageDescription {
         data_type: <T as TypeToImageType>::get_img_type(),
-        dimensions: shape,
+        dimensions: shape.as_slice(),
     };
 
     let mut fits_file = {
