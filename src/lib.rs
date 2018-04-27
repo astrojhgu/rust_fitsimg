@@ -7,8 +7,8 @@ use fitsio::FitsFile;
 use fitsio::fitsfile::ImageDescription;
 use fitsio::types::ImageType;
 use fitsio::types::HduInfo;
-use fitsio::Error;
-use fitsio::Result;
+use fitsio::errors::Error;
+use fitsio::errors::Result;
 use fitsio::fitsfile::ReadWriteImage;
 
 use num_traits::Float;
@@ -23,55 +23,55 @@ pub trait TypeToImageType {
 
 impl TypeToImageType for i8 {
     fn get_img_type() -> ImageType {
-        ImageType::SBYTE_IMG
+        ImageType::Byte
     }
 }
 
 impl TypeToImageType for u8 {
     fn get_img_type() -> ImageType {
-        ImageType::BYTE_IMG
+        ImageType::UnsignedByte
     }
 }
 
 impl TypeToImageType for i16 {
     fn get_img_type() -> ImageType {
-        ImageType::SHORT_IMG
+        ImageType::Short
     }
 }
 
 impl TypeToImageType for u16 {
     fn get_img_type() -> ImageType {
-        ImageType::USHORT_IMG
+        ImageType::UnsignedShort
     }
 }
 
 impl TypeToImageType for i32 {
     fn get_img_type() -> ImageType {
-        ImageType::LONG_IMG
+        ImageType::Long
     }
 }
 
 impl TypeToImageType for u32 {
     fn get_img_type() -> ImageType {
-        ImageType::ULONG_IMG
+        ImageType::UnsignedLong
     }
 }
 
 impl TypeToImageType for i64 {
     fn get_img_type() -> ImageType {
-        ImageType::LONGLONG_IMG
+        ImageType::LongLong
     }
 }
 
 impl TypeToImageType for f32 {
     fn get_img_type() -> ImageType {
-        ImageType::FLOAT_IMG
+        ImageType::Float
     }
 }
 
 impl TypeToImageType for f64 {
     fn get_img_type() -> ImageType {
-        ImageType::DOUBLE_IMG
+        ImageType::Double
     }
 }
 
@@ -89,7 +89,7 @@ where
         _ => return Err(Error::Message("Not image".to_string())),
     };
 
-    shape.reverse();
+    //shape.reverse();
     let data = hdu.read_image(&mut fits_file)?;
 
     match ArrayD::<T>::from_shape_vec(shape.into_dimension(), data) {
@@ -106,7 +106,7 @@ where
     T: Float + NumCast + ReadWriteImage + TypeToImageType,
 {
     let mut shape = data.shape().to_vec();
-    shape.reverse();
+    //shape.reverse();
     let img_desc = ImageDescription {
         data_type: <T as TypeToImageType>::get_img_type(),
         dimensions: shape.as_slice(),
