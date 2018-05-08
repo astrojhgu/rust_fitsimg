@@ -4,12 +4,16 @@ extern crate num_traits;
 use std::iter::FromIterator;
 use std::fs::remove_file;
 use fitsio::FitsFile;
-use fitsio::fitsfile::ImageDescription;
-use fitsio::types::ImageType;
-use fitsio::types::HduInfo;
+use fitsio::images::ImageDescription;
+//use fitsio::fitsfile::ImageDescription;
+use fitsio::images::ImageType;
+//use fitsio::types::ImageType;
+//use fitsio::types::HduInfo;
+use fitsio::hdu::HduInfo;
 use fitsio::errors::Error;
 use fitsio::errors::Result;
-use fitsio::fitsfile::ReadWriteImage;
+use fitsio::images::{ReadImage, WriteImage};
+//use fitsio::fitsfile::ReadWriteImage;
 
 use num_traits::Float;
 use num_traits::NumCast;
@@ -77,7 +81,8 @@ impl TypeToImageType for f64 {
 
 pub fn read_img<T>(fname: String, n: usize) -> Result<ArrayD<T>>
 where
-    T: Float + NumCast + ReadWriteImage,
+    T: Float + NumCast,
+    Vec<T>: ReadImage,
 {
     let mut fits_file = fitsio::FitsFile::open(fname)?;
     let hdu = fits_file.hdu(n)?;
@@ -103,7 +108,7 @@ where
 
 pub fn write_img<T>(fname: String, data: &ArrayD<T>) -> Result<()>
 where
-    T: Float + NumCast + ReadWriteImage + TypeToImageType,
+    T: Float + NumCast+TypeToImageType+WriteImage,
 {
     let mut shape = data.shape().to_vec();
     //shape.reverse();
@@ -126,7 +131,7 @@ where
         }
     };
     //let hdu = fits_file.create_image("".to_string(), &img_desc)?;
-    let hdu = fits_file.current_hdu()?;
+    let hdu = fits_file.hdu(0)?;
     let mut data1 = Vec::<T>::new();
     for x in data.into_iter() {
         data1.push(*x);

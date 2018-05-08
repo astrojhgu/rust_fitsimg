@@ -5,5 +5,5 @@ authors = ["Gu Junhua <jhgu@nao.cas.cn>"]
 
 [dependencies]
 num-traits = "0.1.41"
-fitsio = "=0.13.0"
+fitsio = "=0.14.0"
 ndarray = ">=0.11"
