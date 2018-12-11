@@ -1,9 +1,7 @@
 extern crate fitsio;
 extern crate ndarray;
 extern crate num_traits;
-use std::iter::FromIterator;
 use std::fs::remove_file;
-use fitsio::FitsFile;
 use fitsio::images::ImageDescription;
 //use fitsio::fitsfile::ImageDescription;
 use fitsio::images::ImageType;
@@ -86,7 +84,7 @@ where
 {
     let mut fits_file = fitsio::FitsFile::open(fname)?;
     let hdu = fits_file.hdu(n)?;
-    let mut shape = match hdu.info {
+    let shape = match hdu.info {
         HduInfo::ImageInfo { ref shape, .. } => {
             println!("{:?}", shape);
             shape.clone()
@@ -110,7 +108,7 @@ pub fn write_img<T>(fname: String, data: &ArrayD<T>) -> Result<()>
 where
     T: Float + NumCast+TypeToImageType+WriteImage,
 {
-    let mut shape = data.shape().to_vec();
+    let shape = data.shape().to_vec();
     //shape.reverse();
     let img_desc = ImageDescription {
         data_type: <T as TypeToImageType>::get_img_type(),
@@ -118,7 +116,7 @@ where
     };
 
     let mut fits_file = {
-        remove_file(&fname);
+        remove_file(&fname).unwrap();
         match fitsio::FitsFile::create(fname)
             .with_custom_primary(&img_desc)
             .open()
@@ -137,6 +135,6 @@ where
         data1.push(*x);
     }
 
-    hdu.write_section(&mut fits_file, 0, data1.len(), &data1);
+    hdu.write_section(&mut fits_file, 0, data1.len(), &data1).unwrap();
     Ok(())
 }
