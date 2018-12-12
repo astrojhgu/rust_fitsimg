@@ -1,7 +1,6 @@
 extern crate fitsimg;
 extern crate ndarray;
 
-use std::convert::From;
 
 fn main() {
     //let aa = ndarray::arr2(&[[1.0, 2.0], [2.0, 3.0]]).into_dyn();
@@ -18,7 +17,7 @@ fn main() {
         }
     }
 
-    fitsimg::write_img("a.fits".to_string(), &aa);
+    fitsimg::write_img("a.fits".to_string(), &aa).unwrap();
     let bb = fitsimg::read_img("a.fits".to_string(), 0).unwrap();
     assert_eq!(bb, aa);
     println!("{:?}", bb.shape());

@@ -1,23 +1,23 @@
 extern crate fitsio;
 extern crate ndarray;
 extern crate num_traits;
-use std::fs::remove_file;
 use fitsio::images::ImageDescription;
+use std::fs::remove_file;
 //use fitsio::fitsfile::ImageDescription;
 use fitsio::images::ImageType;
 //use fitsio::types::ImageType;
 //use fitsio::types::HduInfo;
-use fitsio::hdu::HduInfo;
 use fitsio::errors::Error;
 use fitsio::errors::Result;
+use fitsio::hdu::HduInfo;
 use fitsio::images::{ReadImage, WriteImage};
 //use fitsio::fitsfile::ReadWriteImage;
 
 use num_traits::Float;
 use num_traits::NumCast;
 
-use ndarray::IntoDimension;
 use ndarray::ArrayD;
+use ndarray::IntoDimension;
 
 pub trait TypeToImageType {
     fn get_img_type() -> ImageType;
@@ -106,7 +106,7 @@ where
 
 pub fn write_img<T>(fname: String, data: &ArrayD<T>) -> Result<()>
 where
-    T: Float + NumCast+TypeToImageType+WriteImage,
+    T: Float + NumCast + TypeToImageType + WriteImage,
 {
     let shape = data.shape().to_vec();
     //shape.reverse();
@@ -116,7 +116,7 @@ where
     };
 
     let mut fits_file = {
-        remove_file(&fname).unwrap();
+        let _=remove_file(&fname);
         match fitsio::FitsFile::create(fname)
             .with_custom_primary(&img_desc)
             .open()
@@ -135,6 +135,7 @@ where
         data1.push(*x);
     }
 
-    hdu.write_section(&mut fits_file, 0, data1.len(), &data1).unwrap();
+    hdu.write_section(&mut fits_file, 0, data1.len(), &data1)
+        .unwrap();
     Ok(())
 }
