@@ -1,5 +1,5 @@
 [dependencies]
-fitsio = '0.14.0'
+fitsio = '0.14.1'
 ndarray = '0.12.1'
 num-traits = '0.2.6'
 
