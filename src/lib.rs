@@ -79,7 +79,7 @@ impl TypeToImageType for f64 {
 
 pub fn read_img<T>(fname: String, n: usize) -> Result<ArrayD<T>>
 where
-    T: Float + NumCast,
+    T: Copy,
     Vec<T>: ReadImage,
 {
     let mut fits_file = fitsio::FitsFile::open(fname)?;
@@ -106,7 +106,7 @@ where
 
 pub fn write_img<T>(fname: String, data: &ArrayD<T>) -> Result<()>
 where
-    T: Float + NumCast + TypeToImageType + WriteImage,
+    T: Copy + TypeToImageType + WriteImage,
 {
     let shape = data.shape().to_vec();
     //shape.reverse();
