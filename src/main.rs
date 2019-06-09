@@ -12,7 +12,7 @@ fn main() {
         for j in 0..aa.shape()[1] {
             for k in 0..aa.shape()[2] {
                 aa[[i, j, k]] = (i + j + k) as f64;
-                cnt = cnt + 1.0;
+                cnt += 1.0;
             }
         }
     }

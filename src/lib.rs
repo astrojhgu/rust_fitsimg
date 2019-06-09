@@ -13,8 +13,8 @@ use fitsio::hdu::HduInfo;
 use fitsio::images::{ReadImage, WriteImage};
 //use fitsio::fitsfile::ReadWriteImage;
 
-use num_traits::Float;
-use num_traits::NumCast;
+//use num_traits::Float;
+//use num_traits::NumCast;
 
 use ndarray::ArrayD;
 use ndarray::IntoDimension;
