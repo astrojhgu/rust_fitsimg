@@ -18,7 +18,7 @@ fn main() {
     }
 
     fitsimg::write_img("a.fits".to_string(), &aa).unwrap();
-    let bb = fitsimg::read_img("a.fits".to_string(), 0).unwrap();
+    let bb = fitsimg::read_img::<f64>("a.fits".to_string(), 0).unwrap();
     assert_eq!(bb, aa);
     println!("{:?}", bb.shape());
 }
