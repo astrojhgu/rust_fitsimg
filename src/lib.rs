@@ -1,4 +1,4 @@
-extern crate fitsio;
+pub extern crate fitsio;
 extern crate ndarray;
 extern crate num_traits;
 use fitsio::images::ImageDescription;
