@@ -1,7 +1,7 @@
 [dependencies]
-fitsio = '0.15.0'
-ndarray = '0.13.0'
-num-traits = '0.2.8'
+fitsio = '0.16.0'
+ndarray = '0.14.0'
+num-traits = '0.2.14'
 
 [package]
 authors = ['Gu Junhua <jhgu@nao.cas.cn>']
